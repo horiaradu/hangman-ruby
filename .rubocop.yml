@@ -1,0 +1,4 @@
+Style/DefWithParentheses:
+  Enabled: false
+Style/RedundantReturn:
+  Enabled: false
