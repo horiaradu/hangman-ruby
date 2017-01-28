@@ -23,10 +23,12 @@ end
 #
 # @param word [String] the word
 # @param lives [Fixnum] the number of lives
-def print_status(word, lives)
+# @param letters [Array] the letters which have already been tried
+def print_status(word, lives, letters)
   print_word(word)
   puts 'You have ' + lives.to_s + ' more lives'
   puts 'Input a letter'
+  puts 'You have tried these letters: ' + letters.to_s
 end
 
 # Picks a word which will be the word of the game
@@ -45,7 +47,7 @@ def hidden(word)
   '_' * word.size
 end
 
-# Replaces the underscors with the input letter inside the word, in all the
+# Replaces the underscores with the input letter inside the word, in all the
 # places where that letter is present in the solution word. It returns the
 # word with the added letter
 #
@@ -70,12 +72,21 @@ end
 # Returns true if the game has been won
 #
 # @param word [String] the current state of the word
-# @return [Booleab] true/false if the game has/hasn't been won
+# @return [Boolean] true/false if the game has/hasn't been won
 def won(word)
   !word.include?('_')
 end
 
-# This function controlls the flow of the game and it encapsulates the entire
+def read_letter(letters)
+  letter = gets.chomp
+  while letters.include?(letter)
+    puts 'You have already tried that letter. Input a different letter'
+    letter = gets.chomp
+  end
+  letter
+end
+
+# This function controls the flow of the game and it encapsulates the entire
 # game logic.
 # It returns when the game is over.
 # Until the game is over, it needs to read a character from the user and then,
@@ -90,10 +101,14 @@ def game
   puts solution
   word = hidden(solution)
   lives = max_lives()
+  letters = []
 
   while lives != 0 && !won(word)
-    print_status(word, lives)
-    letter = gets.chomp
+    print_status(word, lives, letters)
+
+    letter = read_letter(letters)
+    letters << letter
+
     if (solution.include?(letter))
       word = replace(letter, word, solution)
     else
